@@ -23,7 +23,7 @@ def main():
     #Create callbacks
     early_stopping = keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
     checkpoint = keras.callbacks.ModelCheckpoint(
-        "checkpoint_best_model.keras",
+        "best_model.keras",
         save_best_only=True,
         monitor="val_mse",
         mode="min"

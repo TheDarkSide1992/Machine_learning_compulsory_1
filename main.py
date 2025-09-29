@@ -50,7 +50,7 @@ def main():
     # val_mse calue mean squared error
     # overitte, overittes existing dir
     random_search_tuner = kt.RandomSearch(
-        build_model, objective="val_mse", max_trials=_max_trials, executions_per_trial=_executions_per_trial , overwrite=True,
+        hypermodel=build_model, objective="val_mse", max_trials=_max_trials, executions_per_trial=_executions_per_trial , overwrite=True,
         directory="my_dir", project_name="california_housing")
 
     #Create callbacks
@@ -82,7 +82,7 @@ def get_callbacks():
     callbacks_list = []
 
     if _early_stopping:
-        early_stopping = keras.callbacks.EarlyStopping(patience=_patience, restore_best_weights=True)
+        early_stopping = keras.callbacks.EarlyStopping(patience=_patience, restore_best_weights=True) #goes back to best weights
         callbacks_list.append(early_stopping)
 
     if _save_data:
@@ -96,7 +96,7 @@ def get_callbacks():
     return callbacks_list
 
 
-def build_model(hp):
+def build_model(hp): #hp Hyper parameters
     print("Building new model...")
 
     n_hidden = hp.Int("n_hidden", min_value=_min_layer_count, max_value=_max_layer_count, default=_default_layer_count) #Value calculated by search hyper parameters(hp)
@@ -107,12 +107,13 @@ def build_model(hp):
     optimizer = keras.optimizers.SGD(learning_rate=learning_rate) #SGD Gradiant decent Aims to lowest value and adjusted learning rate
 
     model = Sequential()
-    model.add(Flatten(input_shape=(8,)))
+    model.add(Flatten(input_shape=(8,))) # 8 inout neurons
 
     for i in range(n_hidden): #adds layers based upon numbers of neurons
-        model.add(keras.layers.Dense(n_neurons, activation="relu"))
-    model.add(keras.layers.Dense(1))
+        model.add(keras.layers.Dense(n_neurons, activation="relu")) #Best activaton function for hiden layers #gives good performance and easy to train #alternitive : sigmoid
+    model.add(keras.layers.Dense(1)) #regresor does not need a activatison function in output
     model.compile(loss="mse", optimizer=optimizer,metrics=["mse"])
+    #Loss = Measures the difrence betwen model predicted output and true actual value.
     return model
 
 def set_up_data_skitlearn():
@@ -120,7 +121,7 @@ def set_up_data_skitlearn():
     housing = fetch_california_housing()
 
     X = housing.data  # Features (8 numerical columns)
-    y = housing.target  # Target (median house value)
+    y = housing.target  # Target (Labels)
 
     # Split into train/test
     X_train_full, X_test, y_train_full, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

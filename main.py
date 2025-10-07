@@ -143,7 +143,9 @@ if __name__ == "__main__":
     parser.add_argument("-S","--save-model", action="store_true", help="Saves model if flag is true | includes checkpoints")
     parser.add_argument("-e","--epochs", type=int, help=f"numbers of epochs default is {_epochs}")
     parser.add_argument("-t","--trials", type=int, help=f"numbers of trials default is {_max_trials}")
+    parser.add_argument("-te","--trial-execution", type=int, help=f"numbers of execution pr trial default is {_executions_per_trial}")
     parser.add_argument("--no-early-stoping", action="store_true", help=f"Disables early stoping | Early stopping a regularization technique in machine learning used to prevent overfitting ")
+    parser.add_argument("--layers", type=int, help=f"numbers of default layers is {_max_layer_count}")
 
     args = parser.parse_args()
 
@@ -151,9 +153,12 @@ if __name__ == "__main__":
         _epochs = args.epochs;
     if args.trials is not None:
         _max_trials = args.trials;
+    if args.layers is not None:
+        _max_layer_count = args.layers;
+    if args.trial_execution is not None:
+        _executions_per_trial = args.trial_execution;
     if args.no_early_stoping:
         _early_stopping = False;
     if args.save_model:
         _save_data = True;
-
     main()
